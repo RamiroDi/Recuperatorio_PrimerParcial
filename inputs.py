@@ -1,5 +1,5 @@
 from Package_operaciones.Input import get_int, get_str
-
+import os
 # Verifica que el titulo no exceda los 30 caracteres, que sus caracteres sean alfanuméricos y especiales y que no haya
 # dos peliculas con el mismo titulo(utiliza las funciones titulo_unico() y validar_caracteres()).
 def validar_titulo(lista_peliculas: list, titulo: str):
@@ -41,17 +41,19 @@ generos_validos = [
 # Valida el ingreso del género
 def validar_genero(genero):
     while True:
+        os.system('cls')
         if len(genero) > 30:
-            genero = get_str("El género no puede exceder los 30 caracteres: ", 1, 30)
+            os.system('cls')
+            genero = get_str(f"El género no puede exceder los 30 caracteres:\n{generos_validos}", 1, 30)
         else:
             genero_sin_tildes = convertir_cadena_simple(genero.lower())
             if genero_sin_tildes in generos_validos:
                 return genero_sin_tildes
             else:
-                genero = get_str("El género ingresado no es válido. Por favor, elija uno de los géneros válidos.",1,30)
+                genero = get_str(f"El género ingresado no es válido. Por favor, elija uno de los géneros válidos.\n{generos_validos}",1,30)
 
 # Convierte el género ingresado a una palabra sin tildes para facilitar el ingreso
-def convertir_cadena_simple(cadena):
+def convertir_cadena_simple(cadena: str):
     cadena_simple = cadena.replace("á", "a").replace("é", "e").replace("í", "i").replace("ó", "o").replace("ú", "u")
     return cadena_simple
 
@@ -107,7 +109,7 @@ def modificar_genero_pelicula(lista_peliculas, titulo, nuevo_genero):
 
 #Imprime la pelicula en su formato correspondiente
 def imprimir_info_pelicula(pelicula):
-    print("| {:<30} | {:<10} | {:<20} | {:>10} | {:<5} |".format(
+    print("| {:<30} | {:<30} | {:<30} | {:<30} | {:<14} |".format(
         pelicula["Título"], pelicula["Género"], pelicula["Año de lanzamiento"], 
         pelicula["Duración"], "si" if pelicula["ATP"] else "no"
     ))

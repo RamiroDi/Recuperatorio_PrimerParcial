@@ -1,6 +1,4 @@
-
-{
-    "peliculas": [
+lista_peliculas = [
         {
             "ID": 1,
             "Título": "Inception",
@@ -18,4 +16,3 @@
             "ATP": True
         }
     ]
-}
