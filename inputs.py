@@ -1,24 +1,68 @@
 from Package_operaciones.Input import get_int, get_str
 import os
+
+
+def cargar_peliculas():
+    lista_peliculas = []
+    archivo_existente = os.path.exists('peliculas.csv')
+
+    if not archivo_existente:
+        with open('peliculas.csv', 'w') as archivo_nuevo:
+            archivo_nuevo.write("Título,Género,Año de lanzamiento,Duración,ATP,Plataformas\n")
+    
+    try:
+        with open('peliculas.csv', 'r') as archivo:
+            next(archivo)  # omitir la primera línea (encabezados)
+            for linea in archivo:
+                datos = linea.strip().split(',')
+                pelicula = {
+                    "Título": datos[0],
+                    "Género": datos[1],
+                    "Año de lanzamiento": int(datos[2]),
+                    "Duración": int(datos[3]),
+                    "ATP": datos[4].lower() == "true",  # convertir "true" a True, "false" a False
+                    "Plataformas": datos[5].split(';')
+                }
+                lista_peliculas.append(pelicula)
+    except FileNotFoundError:
+        print("No se pudo abrir el archivo 'peliculas.csv'.")
+
+    return lista_peliculas
+
+def guardar_peliculas(lista_peliculas):
+    try:
+        with open('peliculas.csv', 'w') as archivo:
+            archivo.write("Título,Género,Año de lanzamiento,Duración,ATP,Plataformas\n")
+            for pelicula in lista_peliculas:
+                archivo.write(f"{pelicula['Título']},{pelicula['Género']},{pelicula['Año de lanzamiento']},"
+                              f"{pelicula['Duración']},{pelicula['ATP']},{';'.join(pelicula['Plataformas'])}\n")
+        print("Listado de películas guardado exitosamente en 'peliculas.csv'")
+    except Exception as e:
+        print(f"Error al guardar el listado de películas: {str(e)}")
 # Verifica que el titulo no exceda los 30 caracteres, que sus caracteres sean alfanuméricos y especiales y que no haya
 # dos peliculas con el mismo titulo(utiliza las funciones titulo_unico() y validar_caracteres()).
-def validar_titulo(lista_peliculas: list, titulo: str):
+def validar_titulo(titulo, lista_peliculas):
     while True:
         if len(titulo) > 30:
             titulo = get_str("El título no puede exceder los 30 caracteres: ", 1, 30)
         elif validar_caracteres(titulo):
-            if titulo_unico(lista_peliculas, titulo):
+            if titulo_unico(titulo):
                 return titulo
             else:
                 titulo = get_str("Ya existe una película con ese título. Ingrese otro: ", 1, 30)
         else:
             titulo = get_str("El título solo puede contener caracteres alfanuméricos y caracteres especiales: ", 1, 30)
-      
-# Si se repite el título retorna false y si no se repite retorna true
-def titulo_unico(lista_peliculas: list, titulo: str):
-    for pelicula in lista_peliculas:
-        if pelicula["Título"] == titulo:
-            return False
+
+def titulo_unico(titulo: str) -> bool:
+    try:
+        with open('peliculas.csv', 'r') as archivo:
+            lineas = archivo.readlines()
+            for linea in lineas[1:]:
+                datos = linea.strip().split(',')
+                if datos[0] == titulo:
+                    return False
+    except FileNotFoundError:
+        return True
     return True
 
 # Comprueba que el título esté compuesto por caracteres alfanuméricos y especiales, si lo está retorna true, si no, false
@@ -81,13 +125,21 @@ def respuesta_si_no(mensaje):
             return True
         elif respuesta == "no":
             return False
+        else:
+            print("Por favor, responda con 'si' o 'no'.")
 
+        
 # Genera el id de las películas de la lista. Si no hay, su id será 1 y si hay, toma el valor del último id
 def generar_nuevo_id(lista_peliculas):
     if not lista_peliculas:  # Verifica si la lista está vacía
         return 1  # Si está vacía, el primer ID será 1
     else:
-        ultimo_id = lista_peliculas[-1]["ID"]
+        # Buscar el último ID y asignar el siguiente
+        ultimo_id = 0
+        for pelicula in lista_peliculas:
+            id_pelicula = pelicula.get("ID", 0)
+            if id_pelicula > ultimo_id:
+                ultimo_id = id_pelicula
         nuevo_id = ultimo_id + 1
         return nuevo_id
 
@@ -109,9 +161,9 @@ def modificar_genero_pelicula(lista_peliculas, titulo, nuevo_genero):
 
 #Imprime la pelicula en su formato correspondiente
 def imprimir_info_pelicula(pelicula):
-    print("| {:<30} | {:<30} | {:<30} | {:<30} | {:<14} |".format(
+    print("| {:<30} | {:<30} | {:<30} | {:<30} | {:<14} | {:<30} |".format(
         pelicula["Título"], pelicula["Género"], pelicula["Año de lanzamiento"], 
-        pelicula["Duración"], "si" if pelicula["ATP"] else "no"
+        pelicula["Duración"], "si" if pelicula["ATP"] else "no", ";".join(pelicula["Plataformas"])
     ))
 
 #Se usa para ver si quiere elegir ascendentemente o descentemente(sirve para la funcion ordenar_peliculas())
@@ -218,3 +270,22 @@ def calcular_porcentaje_ATP(lista_peliculas):
     print("ATP: {:.2f}%".format(porcentaje_atp))
     print("No ATP: {:.2f}%".format(porcentaje_no_atp))
 
+def validar_plataformas() -> list:
+    while True:
+        plataformas_input = input("Ingrese las plataformas separadas por '/': ")
+        plataformas = plataformas_input.split('/')
+
+        plataformas_validas = []
+        es_valido = True
+        for plataforma in plataformas:
+            plataforma_limpia = plataforma.strip()
+            if plataforma_limpia.replace(" ", "").isalpha() and len(plataforma_limpia) <= 20:
+                plataformas_validas.append(plataforma_limpia)
+            else:
+                print(f"Nombre de plataforma inválido: '{plataforma_limpia}'. Debe contener solo caracteres alfabéticos o especiales, no caracteres numéricos y no exceder los 20 caracteres.")
+                es_valido = False
+                break
+
+        if es_valido:
+            return plataformas_validas
+        

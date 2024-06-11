@@ -1,9 +1,10 @@
 import sys
 sys.path.append(r'C:\Users\Ramiro\Desktop\pYTHON')
 from Package_operaciones import *
-from lista_peliculas import *
 from peliculas import *
 import os
+
+lista_peliculas = cargar_peliculas()
 
 bandera_permitir = False
 
@@ -17,7 +18,7 @@ while True:#Menu principal
                      6. Buscar películas.\n
                      7. Calcular\n
                      8. Calcular porcentaje.\n
-                     9. Salir\n""", "Error seleccione una opcion valida", 1, 9)
+                     9. Salir\n""", "Error seleccione una opcion valida", 1,9)
 
     match opcion:
         case 1:
@@ -66,5 +67,7 @@ while True:#Menu principal
                 os.system('cls')
                 print("Debe haber dado de alta al menos una película.")
         case 9:
-            print("Gracias por usar nuestro programa!")
+            print("Guardando películas...")
+            guardar_peliculas(lista_peliculas)
+            print("¡Gracias por usar nuestro programa!")
             break

@@ -1,15 +1,15 @@
 # peliculas.py: Donde se realizan todas las funciones que permitan interactuar con la entidad película.
 from inputs import *
-from lista_peliculas import *
 
 def agregar_pelicula(lista_peliculas):#Pide el ingreso de datos y agrega un nueva pelicula a la lista en forma de diccionario
     ID = generar_nuevo_id(lista_peliculas)
-    titulo = validar_titulo(lista_peliculas, input("Ingrese el titulo de la pelicula:\n"))
+    titulo = validar_titulo(input("Ingrese el título de la película:\n"), lista_peliculas)
     genero = validar_genero(input(f"Ingrese un genero de la lista para la pelicula:\n{generos_validos}"))
     año_lanzamiento = get_int("Ingresa un año entre 1888 y el año actual: ","Por favor, ingresa un año válido entre 1888 y el año actual.",1888, 2024)
     duracion = input("Ingrese la duración de la película en minutos: ")
     duracion_validada = validar_duracion(duracion)
     apto_todo_publico = validar_ATP()
+    plataformas = validar_plataformas()
 
     os.system('cls')
 
@@ -19,32 +19,34 @@ def agregar_pelicula(lista_peliculas):#Pide el ingreso de datos y agrega un nuev
         "Género": genero,
         "Año de lanzamiento": año_lanzamiento,
         "Duración": duracion_validada,
-        "ATP": apto_todo_publico
+        "ATP": apto_todo_publico,
+        "Plataformas": plataformas
     }
 
     lista_peliculas.append(nueva_pelicula)
 
-def modificar_pelicula(lista_peliculas):#Pide el titulo de una pelicula le muestra un submenu y le permite la modificacion del dato elegido
+def modificar_pelicula(lista_peliculas):
     while True:
-        titulo = get_str("Ingrese el título de la película a modificar: ",1,30)
+        titulo = get_str("Ingrese el título de la película a modificar: ", 1, 30)
         pelicula_encontrada = buscar_pelicula_por_titulo(lista_peliculas, titulo)
-        
+
         if pelicula_encontrada:
             print("Película encontrada:")
-            print("*"*150)
-            print("| {:<30} | {:<30} | {:<30} | {:<30} | {:<14} |".format(
-                        "Título", "Género", "Año de lanzamiento", 
-                        "Duración", "ATP"))
+            print("*" * 150)
+            print("| {:<30} | {:<30} | {:<30} | {:<30} | {:<14} | {:<30} |".format(
+                "Título", "Género", "Año de lanzamiento",
+                "Duración", "ATP", "Plataformas"))
             imprimir_info_pelicula(pelicula_encontrada)
-            print("*"*150)
+            print("*" * 150)
             while True:
                 opcion = get_int("""Qué desea modificar?\n
                                     1. Género\n
                                     2. Año de lanzamiento\n
                                     3. Duración\n
                                     4. ATP\n
-                                    5. Salir\n""", "Error, introduzca un número válido", 1, 5)
-                
+                                    5. Plataformas\n
+                                    6. Salir\n""", "Error, introduzca un número válido", 1, 6)
+
                 match opcion:
                     case 1:
                         genero_nuevo = input("Ingrese el nuevo género: ")
@@ -64,13 +66,18 @@ def modificar_pelicula(lista_peliculas):#Pide el titulo de una pelicula le muest
                         pelicula_encontrada["ATP"] = nuevo_ATP
                         print("Clasificación ATP actualizada con éxito")
                     case 5:
+                        plataformas_nuevas = validar_plataformas()
+                        pelicula_encontrada["Plataformas"] = plataformas_nuevas
+                        print("Plataformas actualizadas con éxito")
+                    case 6:
                         break
-                print("*"*150)
-                print("| {:<30} | {:<30} | {:<30} | {:<30} | {:<14} |".format(
-                        "Título", "Género", "Año de lanzamiento", 
-                        "Duración", "ATP"))
+
+                print("*" * 150)
+                print("| {:<30} | {:<30} | {:<30} | {:<30} | {:<14} | {:<30} |".format(
+                    "Título", "Género", "Año de lanzamiento",
+                    "Duración", "ATP", "Plataformas"))
                 imprimir_info_pelicula(pelicula_encontrada)
-                print("*"*150)
+                print("*" * 150)
 
                 continuar = respuesta_si_no("Desea seguir modificando? Si/No: ")
                 if not continuar:
@@ -103,69 +110,82 @@ def eliminar_pelicula(lista_peliculas):#Pide el titulo de una pelicula y le preg
         if not continuar:
             break
 
-def mostrar_peliculas(lista_peliculas):#Muestra un submenu y muestra la/s pelicula/s dependiendo la opcion que elija
+def mostrar_peliculas(lista_peliculas):
     while True:
-        opcion = get_int("""Cómo desea mostrar las películas?
-                    1. Todas las películas
-                    2. Por género
-                    3. Por año
-                    4. ATP sí
-                    5. ATP no
-                    6. Salir\n""", "Error, introduzca un número válido", 1, 6)
-
+        opcion = get_int("""
+        Menú de opciones:
+        1. Todas las películas.
+        2. Películas por género.
+        3. Películas por año.
+        4. Películas aptas para todo público.
+        5. Películas no aptas para todo público.
+        6. Películas por plataforma.
+        7. Salir.
+        Ingrese el número de la opción deseada: ""","Error ingrese una opcion valida",1,7)
         match opcion:
             case 1:
                 print("Todas las películas:")
-                print("*"*150)
-                print("| {:<30} | {:<30} | {:<30} | {:<30} | {:<14} |".format(
-                        "Título", "Género", "Año de lanzamiento", 
-                        "Duración", "ATP"))
+                print("*" * 150)
+                print("| {:<30} | {:<30} | {:<30} | {:<30} | {:<14} | {:<30} |".format(
+                    "Título", "Género", "Año de lanzamiento",
+                    "Duración", "ATP", "Plataformas"))
                 for pelicula in lista_peliculas:
                     imprimir_info_pelicula(pelicula)
-                print("*"*150)
+                print("*" * 150)
             case 2:
                 genero = validar_genero(input("Ingrese el género para filtrar: "))
                 print(f"Películas del género '{genero}':")
-                print("*"*150)
-                print("| {:<30} | {:<30} | {:<30} | {:<30} | {:<14} |".format(
-                        "Título", "Género", "Año de lanzamiento", 
-                        "Duración", "ATP"))
+                print("*" * 150)
+                print("| {:<30} | {:<30} | {:<30} | {:<30} | {:<14} | {:<30} |".format(
+                    "Título", "Género", "Año de lanzamiento",
+                    "Duración", "ATP", "Plataformas"))
                 for pelicula in lista_peliculas:
                     if pelicula["Género"] == genero:
                         imprimir_info_pelicula(pelicula)
-                print("*"*150)
+                print("*" * 150)
             case 3:
                 año = get_int("Ingrese el año para filtrar: ", "Error, ingrese un año válido", 1888, 2024)
                 print(f"Películas del año {año}:")
-                print("*"*150)
-                print("| {:<30} | {:<30} | {:<30} | {:<30} | {:<14} |".format(
-                        "Título", "Género", "Año de lanzamiento", 
-                        "Duración", "ATP"))
+                print("*" * 150)
+                print("| {:<30} | {:<30} | {:<30} | {:<30} | {:<14} | {:<30} |".format(
+                    "Título", "Género", "Año de lanzamiento",
+                    "Duración", "ATP", "Plataformas"))
                 for pelicula in lista_peliculas:
                     if pelicula["Año de lanzamiento"] == año:
                         imprimir_info_pelicula(pelicula)
-                print("*"*150)
+                print("*" * 150)
             case 4:
                 print("Películas aptas para todo público:")
-                print("*"*150)
-                print("| {:<30} | {:<30} | {:<30} | {:<30} | {:<14} |".format(
-                        "Título", "Género", "Año de lanzamiento", 
-                        "Duración", "ATP"))
+                print("*" * 150)
+                print("| {:<30} | {:<30} | {:<30} | {:<30} | {:<14} | {:<30} |".format(
+                    "Título", "Género", "Año de lanzamiento",
+                    "Duración", "ATP", "Plataformas"))
                 for pelicula in lista_peliculas:
                     if pelicula["ATP"]:
                         imprimir_info_pelicula(pelicula)
-                print("*"*150)
+                print("*" * 150)
             case 5:
                 print("Películas no aptas para todo público:")
-                print("*"*150)
-                print("| {:<30} | {:<30} | {:<30} | {:<30} | {:<14} |".format(
-                        "Título", "Género", "Año de lanzamiento", 
-                        "Duración", "ATP"))
+                print("*" * 150)
+                print("| {:<30} | {:<30} | {:<30} | {:<30} | {:<14} | {:<30} |".format(
+                    "Título", "Género", "Año de lanzamiento",
+                    "Duración", "ATP", "Plataformas"))
                 for pelicula in lista_peliculas:
                     if not pelicula["ATP"]:
                         imprimir_info_pelicula(pelicula)
-                print("*"*150)
+                print("*" * 150)
             case 6:
+                plataforma = input("Ingrese la plataforma para filtrar: ")
+                print(f"Películas disponibles en la plataforma '{plataforma}':")
+                print("*" * 150)
+                print("| {:<30} | {:<30} | {:<30} | {:<30} | {:<14} | {:<30} |".format(
+                    "Título", "Género", "Año de lanzamiento",
+                    "Duración", "ATP", "Plataformas"))
+                for pelicula in lista_peliculas:
+                    if plataforma in pelicula["Plataformas"]:
+                        imprimir_info_pelicula(pelicula)
+                print("*" * 150)
+            case 7:
                 salir = respuesta_si_no("Desea salir? Si/No: ")
                 if salir:
                     print("Saliendo...")
