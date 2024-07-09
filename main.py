@@ -1,5 +1,4 @@
 import sys
-sys.path.append(r'C:\Users\Ramiro\Desktop\pYTHON')
 from Package_operaciones import *
 from peliculas import *
 import os
@@ -22,52 +21,58 @@ while True:#Menu principal
 
     match opcion:
         case 1:
-            agregar_pelicula(lista_peliculas)
+            agregar_pelicula(lista_peliculas)#Agrega una pelicula
             bandera_permitir = True
         case 2:
             if bandera_permitir:
-                modificar_pelicula(lista_peliculas)
+                modificar_pelicula(lista_peliculas)#Modifica una pelicula solo si se dio de alta una
             else:
                 os.system('cls')
                 print("Debe haber dado de alta al menos una película.")
         case 3:
             if bandera_permitir:
-                eliminar_pelicula(lista_peliculas)
+                os.system('cls')
+                eliminar_pelicula(lista_peliculas)#Elimina una pelicula solo si se dio de alta una
             else:
                 os.system('cls')
                 print("Debe haber dado de alta al menos una película.")
         case 4:
             if bandera_permitir:
-                mostrar_peliculas(lista_peliculas)
+                os.system('cls')
+                mostrar_peliculas(lista_peliculas)#Muestra las peliculas solo si se dio de alta una
             else:
                 os.system('cls')
                 print("Debe haber dado de alta al menos una película.")
         case 5:
             if bandera_permitir:
-                ordenar_peliculas(lista_peliculas)
+                os.system('cls')
+                ordenar_peliculas(lista_peliculas)#Ordena las peliculas solo si se dio de alta una
             else:
                 os.system('cls')
                 print("Debe haber dado de alta al menos una película.")
         case 6:
             if bandera_permitir:
-                buscar_pelicula(lista_peliculas)
+                os.system('cls')
+                buscar_pelicula(lista_peliculas)#Busca la pelicula solo si se dio de alta una
             else:
                 os.system('cls')
                 print("Debe haber dado de alta al menos una película.")
         case 7:
             if bandera_permitir:
-                calcular_peliculas(lista_peliculas)
+                os.system('cls')
+                calcular_peliculas(lista_peliculas)#Calcula las peliculas dependiendo lo que ingrese el usuario solo si se dio de alta una pelicula
             else:
                 os.system('cls')
                 print("Debe haber dado de alta al menos una película.")
         case 8:
             if bandera_permitir:
-                porcentaje_peliculas(lista_peliculas)
+                os.system('cls')
+                porcentaje_peliculas(lista_peliculas)#Hace el porcentaje dependiendo lo que ingrese el usuario solo si se dio de alta una pelicula
             else:
                 os.system('cls')
                 print("Debe haber dado de alta al menos una película.")
         case 9:
             print("Guardando películas...")
-            guardar_peliculas(lista_peliculas)
+            guardar_peliculas(lista_peliculas)#Guarda las peliculas para cerrar el programa
             print("¡Gracias por usar nuestro programa!")
             break

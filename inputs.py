@@ -2,17 +2,12 @@ from Package_operaciones.Input import get_int, get_str
 import os
 
 
-def cargar_peliculas():
+def cargar_peliculas():#Carga las peliculas del archivo csv
     lista_peliculas = []
     archivo_existente = os.path.exists('peliculas.csv')
-
-    if not archivo_existente:
-        with open('peliculas.csv', 'w') as archivo_nuevo:
-            archivo_nuevo.write("Título,Género,Año de lanzamiento,Duración,ATP,Plataformas\n")
     
     try:
-        with open('peliculas.csv', 'r') as archivo:
-            next(archivo)  # omitir la primera línea (encabezados)
+        with open('peliculas.csv', 'r', encoding="utf8") as archivo:
             for linea in archivo:
                 datos = linea.strip().split(',')
                 pelicula = {
@@ -29,16 +24,16 @@ def cargar_peliculas():
 
     return lista_peliculas
 
-def guardar_peliculas(lista_peliculas):
+def guardar_peliculas(lista_peliculas):#Guarda las peliculas en el archivo csv
     try:
-        with open('peliculas.csv', 'w') as archivo:
-            archivo.write("Título,Género,Año de lanzamiento,Duración,ATP,Plataformas\n")
+        with open('peliculas.csv', 'w', encoding="utf8") as archivo:
             for pelicula in lista_peliculas:
                 archivo.write(f"{pelicula['Título']},{pelicula['Género']},{pelicula['Año de lanzamiento']},"
                               f"{pelicula['Duración']},{pelicula['ATP']},{';'.join(pelicula['Plataformas'])}\n")
         print("Listado de películas guardado exitosamente en 'peliculas.csv'")
     except Exception as e:
         print(f"Error al guardar el listado de películas: {str(e)}")
+
 # Verifica que el titulo no exceda los 30 caracteres, que sus caracteres sean alfanuméricos y especiales y que no haya
 # dos peliculas con el mismo titulo(utiliza las funciones titulo_unico() y validar_caracteres()).
 def validar_titulo(titulo, lista_peliculas):
@@ -53,7 +48,7 @@ def validar_titulo(titulo, lista_peliculas):
         else:
             titulo = get_str("El título solo puede contener caracteres alfanuméricos y caracteres especiales: ", 1, 30)
 
-def titulo_unico(titulo: str) -> bool:
+def titulo_unico(titulo: str) -> bool:#Valida que no se repita un titulo
     try:
         with open('peliculas.csv', 'r') as archivo:
             lineas = archivo.readlines()
@@ -65,12 +60,12 @@ def titulo_unico(titulo: str) -> bool:
         return True
     return True
 
-# Comprueba que el título esté compuesto por caracteres alfanuméricos y especiales, si lo está retorna true, si no, false
-def validar_caracteres(titulo: str):
+def validar_caracteres(titulo: str):# Comprueba que el título esté compuesto por caracteres alfanuméricos y especiales, si lo está retorna true, si no, false
     for char in titulo:
         if ord(char) < 32 or ord(char) > 126:
             return False
-    return True
+        else:
+            return True
 
 # Lista de géneros válidos
 generos_validos = [
@@ -82,8 +77,7 @@ generos_validos = [
     "gotico", "slasher", "adolescente", "culto", "maravilloso"
 ]
 
-# Valida el ingreso del género
-def validar_genero(genero):
+def validar_genero(genero):# Valida el ingreso del género
     while True:
         os.system('cls')
         if len(genero) > 30:
@@ -96,13 +90,11 @@ def validar_genero(genero):
             else:
                 genero = get_str(f"El género ingresado no es válido. Por favor, elija uno de los géneros válidos.\n{generos_validos}",1,30)
 
-# Convierte el género ingresado a una palabra sin tildes para facilitar el ingreso
-def convertir_cadena_simple(cadena: str):
+def convertir_cadena_simple(cadena: str):# Convierte el género ingresado a una palabra sin tildes para facilitar el ingreso
     cadena_simple = cadena.replace("á", "a").replace("é", "e").replace("í", "i").replace("ó", "o").replace("ú", "u")
     return cadena_simple
 
-#pide y valida la duracion dada por el usuario
-def validar_duracion(duracion):
+def validar_duracion(duracion):#pide y valida la duracion dada por el usuario
     while True:
         if duracion.isdigit():
             duracion_pelicula = int(duracion)
@@ -110,14 +102,13 @@ def validar_duracion(duracion):
                 return duracion_pelicula
         duracion = input("Error, ingrese una duración válida (en minutos): ")
 
-# Valida si la película es o no es ATP y devuelve true o false
-def validar_ATP():
+def validar_ATP():# Valida si la película es o no es ATP y devuelve true o false
     while True:
         respuesta_usuario = respuesta_si_no("Es ATP (apta para todo público)? Si/No: ")
         if respuesta_usuario is not None:
             return respuesta_usuario
 
-def respuesta_si_no(mensaje):
+def respuesta_si_no(mensaje):#Convierte en si/no en True/False
     while True:
         respuesta = get_str(mensaje, 2, 3)
         respuesta = respuesta.lower()
@@ -128,9 +119,7 @@ def respuesta_si_no(mensaje):
         else:
             print("Por favor, responda con 'si' o 'no'.")
 
-        
-# Genera el id de las películas de la lista. Si no hay, su id será 1 y si hay, toma el valor del último id
-def generar_nuevo_id(lista_peliculas):
+def generar_nuevo_id(lista_peliculas):# Genera el id de las películas de la lista. Si no hay, su id será 1 y si hay, toma el valor del último id
     if not lista_peliculas:  # Verifica si la lista está vacía
         return 1  # Si está vacía, el primer ID será 1
     else:
@@ -143,15 +132,13 @@ def generar_nuevo_id(lista_peliculas):
         nuevo_id = ultimo_id + 1
         return nuevo_id
 
-#busca la pelicula por el titulo
-def buscar_pelicula_por_titulo(lista_peliculas, titulo):
+def buscar_pelicula_por_titulo(lista_peliculas, titulo):#busca la pelicula por el titulo
     for pelicula in lista_peliculas:
         if pelicula["Título"] == titulo:
             return pelicula
     return None
 
-# Se usa en modificar película
-def modificar_genero_pelicula(lista_peliculas, titulo, nuevo_genero):
+def modificar_genero_pelicula(lista_peliculas, titulo, nuevo_genero):#Modifica el genero de la peliculas
     for pelicula in lista_peliculas:
         if pelicula["Título"] == titulo:
             pelicula["Género"] = nuevo_genero
@@ -159,15 +146,13 @@ def modificar_genero_pelicula(lista_peliculas, titulo, nuevo_genero):
             return True
     return False
 
-#Imprime la pelicula en su formato correspondiente
-def imprimir_info_pelicula(pelicula):
+def imprimir_info_pelicula(pelicula):#Imprime la pelicula en su formato correspondiente
     print("| {:<30} | {:<30} | {:<30} | {:<30} | {:<14} | {:<30} |".format(
         pelicula["Título"], pelicula["Género"], pelicula["Año de lanzamiento"], 
         pelicula["Duración"], "si" if pelicula["ATP"] else "no", ";".join(pelicula["Plataformas"])
     ))
 
-#Se usa para ver si quiere elegir ascendentemente o descentemente(sirve para la funcion ordenar_peliculas())
-def elegir_orden():
+def elegir_orden():#Se usa para ver si quiere ordenar ascendentemente o descentemente(sirve para la funcion ordenar_peliculas())
     while True:
         orden = input("Desea ordenar de forma ascendente o descendente? (asc/desc): ").strip().lower()
         if orden in ["asc", "desc"]:
@@ -222,20 +207,20 @@ def calcular_duracion_promedio(lista_peliculas):#Calcula la duracion promedio
     promedio_duracion = total_duracion / len(lista_peliculas)
     return promedio_duracion
 
-def contar_peliculas_por_año(lista_peliculas):
+def contar_peliculas_por_año(lista_peliculas):#Muestra los años de 2005 hasta 2024 y cuantas peliculas hay por año
     conteo_por_año = {}
 
     for año in range(2005, 2025):
         conteo_por_año[año] = 0
-        
+
     for pelicula in lista_peliculas:
         año_lanzamiento = pelicula["Año de lanzamiento"]
         if 2005 <= año_lanzamiento <= 2024:
             conteo_por_año[año_lanzamiento] += 1
-
+    
     return conteo_por_año
 
-def calcular_porcentaje_genero(lista_peliculas):
+def calcular_porcentaje_genero(lista_peliculas):#Calcula y muestra el porcentaje de peliculas por genero
     genero_contador = {}
     total_peliculas = len(lista_peliculas)
 
@@ -253,7 +238,7 @@ def calcular_porcentaje_genero(lista_peliculas):
         porcentaje_formateado = "{:.2f}%".format(porcentaje)
         print(f"{genero}: {porcentaje_formateado}")
 
-def calcular_porcentaje_ATP(lista_peliculas):
+def calcular_porcentaje_ATP(lista_peliculas):#Calcula y muestra el porcentaje de peliculas atp o no atp
     total_peliculas = len(lista_peliculas)
     atp_contador = 0
 
@@ -270,7 +255,7 @@ def calcular_porcentaje_ATP(lista_peliculas):
     print("ATP: {:.2f}%".format(porcentaje_atp))
     print("No ATP: {:.2f}%".format(porcentaje_no_atp))
 
-def validar_plataformas() -> list:
+def validar_plataformas() -> list:#Valida el ingreso de las plataformas(que contenga caracteres especiales o alfabeticos)
     while True:
         plataformas_input = input("Ingrese las plataformas separadas por '/': ")
         plataformas = plataformas_input.split('/')

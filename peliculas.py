@@ -4,8 +4,8 @@ from inputs import *
 def agregar_pelicula(lista_peliculas):#Pide el ingreso de datos y agrega un nueva pelicula a la lista en forma de diccionario
     ID = generar_nuevo_id(lista_peliculas)
     titulo = validar_titulo(input("Ingrese el título de la película:\n"), lista_peliculas)
-    genero = validar_genero(input(f"Ingrese un genero de la lista para la pelicula:\n{generos_validos}"))
-    año_lanzamiento = get_int("Ingresa un año entre 1888 y el año actual: ","Por favor, ingresa un año válido entre 1888 y el año actual.",1888, 2024)
+    genero = validar_genero(input(f"Ingrese un genero de la lista para la pelicula:\n{generos_validos}\n"))
+    año_lanzamiento = get_int("En que año fue lanzada la pelicula(entre 1888 y el año actual): ","Por favor, ingresa un año válido entre 1888 y el año actual.",1888, 2024)
     duracion = input("Ingrese la duración de la película en minutos: ")
     duracion_validada = validar_duracion(duracion)
     apto_todo_publico = validar_ATP()
@@ -25,20 +25,22 @@ def agregar_pelicula(lista_peliculas):#Pide el ingreso de datos y agrega un nuev
 
     lista_peliculas.append(nueva_pelicula)
 
-def modificar_pelicula(lista_peliculas):
-    while True:
+def modificar_pelicula(lista_peliculas):#Modifica la pelicula ingresada dependiendo el dato que quiera cambiar
+    bandera_modificar = True
+    while bandera_modificar:
         titulo = get_str("Ingrese el título de la película a modificar: ", 1, 30)
         pelicula_encontrada = buscar_pelicula_por_titulo(lista_peliculas, titulo)
+        pelicula_modificar = True
 
         if pelicula_encontrada:
             print("Película encontrada:")
-            print("*" * 150)
+            print("*" * 165)
             print("| {:<30} | {:<30} | {:<30} | {:<30} | {:<14} | {:<30} |".format(
                 "Título", "Género", "Año de lanzamiento",
                 "Duración", "ATP", "Plataformas"))
             imprimir_info_pelicula(pelicula_encontrada)
-            print("*" * 150)
-            while True:
+            print("*" * 165)
+            while pelicula_modificar:
                 opcion = get_int("""Qué desea modificar?\n
                                     1. Género\n
                                     2. Año de lanzamiento\n
@@ -49,6 +51,7 @@ def modificar_pelicula(lista_peliculas):
 
                 match opcion:
                     case 1:
+                        print(generos_validos)
                         genero_nuevo = input("Ingrese el nuevo género: ")
                         genero = validar_genero(genero_nuevo)
                         pelicula_encontrada["Género"] = genero
@@ -72,21 +75,21 @@ def modificar_pelicula(lista_peliculas):
                     case 6:
                         break
 
-                print("*" * 150)
+                print("*" * 165)
                 print("| {:<30} | {:<30} | {:<30} | {:<30} | {:<14} | {:<30} |".format(
                     "Título", "Género", "Año de lanzamiento",
                     "Duración", "ATP", "Plataformas"))
                 imprimir_info_pelicula(pelicula_encontrada)
-                print("*" * 150)
+                print("*" * 165)
 
-                continuar = respuesta_si_no("Desea seguir modificando? Si/No: ")
+                continuar = respuesta_si_no("Desea seguir modificando esta pelicula? Si/No: ")
                 if not continuar:
-                    break
+                    bandera_modificar = False
         else:
             print("No se encontró ninguna película con ese título.")
             continuar = respuesta_si_no("Desea buscar otra película? Si/No: ")
             if not continuar:
-                break
+                pelicula_modificar = False
 
 def eliminar_pelicula(lista_peliculas):#Pide el titulo de una pelicula y le pregunta si realmente desea eliminarla
     while True:
@@ -110,7 +113,7 @@ def eliminar_pelicula(lista_peliculas):#Pide el titulo de una pelicula y le preg
         if not continuar:
             break
 
-def mostrar_peliculas(lista_peliculas):
+def mostrar_peliculas(lista_peliculas):#Muestra las peliculas segun el parametro elegido por el usuario
     while True:
         opcion = get_int("""
         Menú de opciones:
@@ -125,66 +128,66 @@ def mostrar_peliculas(lista_peliculas):
         match opcion:
             case 1:
                 print("Todas las películas:")
-                print("*" * 150)
+                print("*" * 165)
                 print("| {:<30} | {:<30} | {:<30} | {:<30} | {:<14} | {:<30} |".format(
                     "Título", "Género", "Año de lanzamiento",
                     "Duración", "ATP", "Plataformas"))
                 for pelicula in lista_peliculas:
                     imprimir_info_pelicula(pelicula)
-                print("*" * 150)
+                print("*" * 165)
             case 2:
                 genero = validar_genero(input("Ingrese el género para filtrar: "))
                 print(f"Películas del género '{genero}':")
-                print("*" * 150)
+                print("*" * 165)
                 print("| {:<30} | {:<30} | {:<30} | {:<30} | {:<14} | {:<30} |".format(
                     "Título", "Género", "Año de lanzamiento",
                     "Duración", "ATP", "Plataformas"))
                 for pelicula in lista_peliculas:
                     if pelicula["Género"] == genero:
                         imprimir_info_pelicula(pelicula)
-                print("*" * 150)
+                print("*" * 165)
             case 3:
                 año = get_int("Ingrese el año para filtrar: ", "Error, ingrese un año válido", 1888, 2024)
                 print(f"Películas del año {año}:")
-                print("*" * 150)
+                print("*" * 165)
                 print("| {:<30} | {:<30} | {:<30} | {:<30} | {:<14} | {:<30} |".format(
                     "Título", "Género", "Año de lanzamiento",
                     "Duración", "ATP", "Plataformas"))
                 for pelicula in lista_peliculas:
                     if pelicula["Año de lanzamiento"] == año:
                         imprimir_info_pelicula(pelicula)
-                print("*" * 150)
+                print("*" * 165)
             case 4:
                 print("Películas aptas para todo público:")
-                print("*" * 150)
+                print("*" * 165)
                 print("| {:<30} | {:<30} | {:<30} | {:<30} | {:<14} | {:<30} |".format(
                     "Título", "Género", "Año de lanzamiento",
                     "Duración", "ATP", "Plataformas"))
                 for pelicula in lista_peliculas:
                     if pelicula["ATP"]:
                         imprimir_info_pelicula(pelicula)
-                print("*" * 150)
+                print("*" * 165)
             case 5:
                 print("Películas no aptas para todo público:")
-                print("*" * 150)
+                print("*" * 165)
                 print("| {:<30} | {:<30} | {:<30} | {:<30} | {:<14} | {:<30} |".format(
                     "Título", "Género", "Año de lanzamiento",
                     "Duración", "ATP", "Plataformas"))
                 for pelicula in lista_peliculas:
                     if not pelicula["ATP"]:
                         imprimir_info_pelicula(pelicula)
-                print("*" * 150)
+                print("*" * 165)
             case 6:
                 plataforma = input("Ingrese la plataforma para filtrar: ")
                 print(f"Películas disponibles en la plataforma '{plataforma}':")
-                print("*" * 150)
+                print("*" * 165)
                 print("| {:<30} | {:<30} | {:<30} | {:<30} | {:<14} | {:<30} |".format(
                     "Título", "Género", "Año de lanzamiento",
                     "Duración", "ATP", "Plataformas"))
                 for pelicula in lista_peliculas:
                     if plataforma in pelicula["Plataformas"]:
                         imprimir_info_pelicula(pelicula)
-                print("*" * 150)
+                print("*" * 165)
             case 7:
                 salir = respuesta_si_no("Desea salir? Si/No: ")
                 if salir:
@@ -198,7 +201,7 @@ def mostrar_peliculas(lista_peliculas):
             print("Saliendo...")
             break
 
-def ordenar_peliculas(lista_peliculas):#Muestra un submenu y ordena las peliculas dependiendo lo que elija el usuario
+def ordenar_peliculas(lista_peliculas):#Ordena las peliculas dependiendo lo que elija el usuario
     while True:
         opcion = get_int("""Seleccione una opción de ordenamiento:\n
                             1. Título\n
@@ -240,7 +243,7 @@ def ordenar_peliculas(lista_peliculas):#Muestra un submenu y ordena las pelicula
                 if not respuesta_si_no("Desea ordenar las peliculas de otra manera? Si/No: "):
                     break
 
-def buscar_pelicula(lista_peliculas):#Busca una pelicula e imprime su informacion
+def buscar_pelicula(lista_peliculas):#Busca una pelicula ingresada por el usuario e imprime su informacion, pero si no se encuentra dicha pelicula se le informa al usuario
     while True:
         titulo = get_str("Ingrese el título de la película a buscar: ", 1, 30)
         pelicula_encontrada = buscar_pelicula_por_titulo(lista_peliculas, titulo)
@@ -255,7 +258,7 @@ def buscar_pelicula(lista_peliculas):#Busca una pelicula e imprime su informacio
         if not continuar:
             break
 
-def calcular_peliculas(lista_peliculas):#calcula la duracion promedio de todas las peliculas o las peliculas lanzadas entre 2005 y 2024
+def calcular_peliculas(lista_peliculas):#calcula la duracion promedio de todas las peliculas o las peliculas lanzadas entre 1855 y 2024
     while True:
         opcion = get_int("""Seleccione una opción de cálculo:\n
                             1. Duración promedio de todas las películas\n
